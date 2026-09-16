@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------
+   Heritage Press design tokens (from Stitch export DESIGN.md)
+   These become real Tailwind utilities in v4's CSS-first config:
+   bg-primary, text-on-surface, font-display, text-display-lg, etc.
+--------------------------------------------------------- */
+@theme {
+  --color-surface: #fbf9f4;
+  --color-surface-dim: #dbdad5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f3ee;
+  --color-surface-container: #efeee9;
+  --color-surface-container-high: #eae8e3;
+  --color-surface-container-highest: #e4e2de;
+  --color-on-surface: #1b1c19;
+  --color-on-surface-variant: #53433e;
+  --color-inverse-surface: #30312e;
+  --color-inverse-on-surface: #f2f1ec;
+  --color-outline: #86736d;
+  --color-outline-variant: #d8c2ba;
+
+  --color-primary: #6d341d;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #8a4b32;
+  --color-on-primary-container: #ffc9b5;
+  --color-inverse-primary: #ffb59a;
+
+  --color-secondary: #665d56;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #eaddd4;
+  --color-on-secondary-container: #6a615a;
+
+  --color-tertiary: #48453c;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #605c53;
+  --color-on-tertiary-container: #dbd5c9;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* convenience aliases used throughout the UI */
+  --color-terracotta: #8a4b32;
+  --color-warm-white: #fffdf8;
+  --color-parchment: #f6efe3;
+
+  --color-marigold: #e8a33d;
+  --color-indigo-deep: #2c3454;
+  --color-saffron: #d9822b;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--font-weight: 700;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-display-mobile: 32px;
+  --text-display-mobile--line-height: 40px;
+  --text-display-mobile--font-weight: 700;
+  --text-display-mobile--letter-spacing: -0.01em;
+
+  --text-headline: 24px;
+  --text-headline--line-height: 32px;
+  --text-headline--font-weight: 600;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--font-weight: 600;
+  --text-label-sm--letter-spacing: 0.1em;
+
+  --text-meta: 11px;
+  --text-meta--line-height: 14px;
+  --text-meta--font-weight: 500;
+
+  --radius-DEFAULT: 4px;
+}
+
+body {
+  background-color: var(--color-parchment);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+}
+
+/* ---------- "Ink on paper" hard-offset shadow system ---------- */
+.paper-shadow {
+  box-shadow: 4px 4px 0 0 var(--color-on-surface);
+  border: 2px solid var(--color-on-surface);
+}
+.paper-shadow-sm {
+  box-shadow: 2px 2px 0 0 var(--color-on-surface);
+  border: 2px solid var(--color-on-surface);
+}
+.paper-shadow-lg {
+  box-shadow: 8px 8px 0 0 var(--color-on-surface);
+  border: 2px solid var(--color-on-surface);
+}
+.paper-interactive {
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.paper-interactive:hover {
+  box-shadow: 6px 6px 0 0 var(--color-on-surface);
+  transform: translate(-2px, -2px);
+}
+.paper-interactive:active {
+  box-shadow: 0 0 0 0 var(--color-on-surface);
+  transform: translate(4px, 4px);
+}
+
+.btn-primary {
+  background-color: var(--color-terracotta);
+  color: var(--color-on-primary);
+  border: 2px solid var(--color-on-surface);
+}
+.btn-secondary {
+  background-color: var(--color-warm-white);
+  color: var(--color-on-surface);
+  border: 2px solid var(--color-on-surface);
+}
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-field {
+  background-color: var(--color-warm-white);
+  border: 2px solid var(--color-on-surface);
+  color: var(--color-on-surface);
+}
+.input-field::placeholder {
+  color: var(--color-on-surface);
+  opacity: 0.5;
+}
+.input-field:focus {
+  outline: none;
+  box-shadow: 2px 2px 0 0 var(--color-terracotta);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #eadfcf 25%, #f3ecdf 37%, #eadfcf 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------- Motion ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease both;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Indian-motif decorative border: a simple repeating temple/jali
+   lattice line, used as a divider between sections ---------- */
+.motif-divider {
+  height: 10px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-terracotta) 0 4px,
+    transparent 4px 12px
+  );
+  opacity: 0.55;
+}
+.motif-corner {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.label-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ---------- Indian-motif decorative touches ---------- */
+
+/* Subtle block-print style dot lattice, used as a low-opacity background
+   accent on hero/footer sections — evokes traditional block-print work
+   without needing an image asset. */
+.jali-bg {
+  background-image: radial-gradient(var(--color-terracotta) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  opacity: 0.08;
+}
+
+.badge-marigold {
+  background-color: var(--color-marigold);
+  color: var(--color-inverse-surface);
+  border: 2px solid var(--color-on-surface);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+}
