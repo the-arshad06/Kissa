@@ -93,7 +93,7 @@ export default function Signup() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter ypur email"
+                placeholder="Enter your email"
                 className="input-field w-full px-3 py-3 text-sm"
               />
             </div>
