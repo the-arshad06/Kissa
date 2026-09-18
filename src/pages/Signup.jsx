@@ -63,7 +63,7 @@ export default function Signup() {
 
         <div className="bg-warm-white border-2 border-on-surface paper-shadow p-8">
           <h1 className="font-display text-headline font-bold mb-1">Join the Archive</h1>
-          <p className="text-sm text-on-surface-variant mb-6">Establish your account to start contributing.</p>
+          <p className="text-sm text-on-surface-variant mb-6">Create your account to start contributing.</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
@@ -72,7 +72,7 @@ export default function Signup() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="e.g. Arundhati Roy"
+                placeholder="Enter your name"
                 className="input-field w-full px-3 py-3 text-sm"
               />
             </div>
@@ -82,7 +82,7 @@ export default function Signup() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="e.g. arundhati_r"
+                placeholder="Enter username"
                 className="input-field w-full px-3 py-3 text-sm"
               />
             </div>
@@ -93,7 +93,7 @@ export default function Signup() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="Enter ypur email"
                 className="input-field w-full px-3 py-3 text-sm"
               />
             </div>
@@ -114,7 +114,7 @@ export default function Signup() {
               disabled={busy}
               className="btn-primary label-caps px-6 py-3 paper-shadow-sm paper-interactive disabled:opacity-50 mt-2"
             >
-              {busy ? 'Creating account...' : 'Establish Account'}
+              {busy ? 'Creating account...' : 'Create'}
             </button>
           </form>
 
