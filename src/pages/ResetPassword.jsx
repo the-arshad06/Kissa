@@ -48,7 +48,7 @@ export default function ResetPassword() {
     // nothing ever arrives (e.g. they opened this URL directly).
     const timeout = setTimeout(() => {
       setLinkError((current) => current ?? 'This link is invalid or has expired.')
-    }, 8000)
+    }, 120000)
 
     return () => {
       listener.subscription.unsubscribe()
