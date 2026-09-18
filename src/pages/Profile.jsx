@@ -137,16 +137,16 @@ export default function Profile() {
         {isOwnProfile ? (
           <div className="flex gap-2">
             <Link
-              to="/profile/edit"
-              className="btn-secondary label-caps flex-1 px-4 py-2 paper-shadow-sm paper-interactive flex items-center justify-center gap-2"
-            >
-              <FiEdit2 size={16} /> Edit Profile
-            </Link>
-            <Link
               to="/create"
               className="btn-primary label-caps flex-1 px-4 py-2 paper-shadow-sm paper-interactive flex items-center justify-center gap-2"
             >
               <FiPlus size={16} /> New Story
+            </Link>
+            <Link
+              to="/profile/edit"
+              className="btn-secondary label-caps flex-1 px-4 py-2 paper-shadow-sm paper-interactive flex items-center justify-center gap-2"
+            >
+              <FiEdit2 size={16} /> Edit Profile
             </Link>
           </div>
         ) : (
