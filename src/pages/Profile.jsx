@@ -105,46 +105,54 @@ export default function Profile() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-6 border-b-2 border-on-surface pb-8 mb-8 animate-fade-in-up">
-        <div className="shrink-0">
-          <Avatar src={profile.avatar_url} size="xl" className="shadow-[3px_3px_0_0_#1b1c19]" />
-        </div>
-        <div className="flex-1">
-          <h1 className="font-display text-headline font-bold">{profile.full_name || profile.username}</h1>
-          <p className="text-on-surface-variant text-sm mb-2">@{profile.username}</p>
-          {profile.bio && <p className="text-sm max-w-xl mb-3 leading-relaxed">{profile.bio}</p>}
-          <div className="flex gap-6 text-sm">
-            <span>
-              <strong>{stories.length}</strong> Stories
-            </span>
-            <button
-              onClick={() => setFollowModalTab('followers')}
-              className="hover:text-primary transition-colors"
-            >
-              <strong>{counts.followers}</strong> Followers
-            </button>
-            <button
-              onClick={() => setFollowModalTab('following')}
-              className="hover:text-primary transition-colors"
-            >
-              <strong>{counts.following}</strong> Following
-            </button>
+      <div className="border-b-2 border-on-surface pb-6 mb-8 animate-fade-in-up">
+        {/* Avatar + name/username row */}
+        <div className="flex items-center gap-4 mb-4">
+          <Avatar src={profile.avatar_url} size="lg" className="shadow-[3px_3px_0_0_#1b1c19] shrink-0" />
+          <div className="min-w-0">
+            <h1 className="font-display text-headline font-bold truncate">{profile.full_name || profile.username}</h1>
+            <p className="text-on-surface-variant text-sm truncate">@{profile.username}</p>
           </div>
         </div>
 
+        {/* Stats row, full width */}
+        <div className="grid grid-cols-3 text-center mb-4">
+          <div>
+            <p className="font-bold text-lg leading-none">{stories.length}</p>
+            <p className="text-xs text-on-surface-variant mt-1">Stories</p>
+          </div>
+          <button onClick={() => setFollowModalTab('followers')} className="hover:text-primary transition-colors">
+            <p className="font-bold text-lg leading-none">{counts.followers}</p>
+            <p className="text-xs text-on-surface-variant mt-1">Followers</p>
+          </button>
+          <button onClick={() => setFollowModalTab('following')} className="hover:text-primary transition-colors">
+            <p className="font-bold text-lg leading-none">{counts.following}</p>
+            <p className="text-xs text-on-surface-variant mt-1">Following</p>
+          </button>
+        </div>
+
+        {profile.bio && <p className="text-sm leading-relaxed mb-4">{profile.bio}</p>}
+
+        {/* Actions row */}
         {isOwnProfile ? (
-          <div className="flex gap-3">
-            <Link to="/create" className="btn-primary label-caps px-4 py-2 paper-shadow-sm paper-interactive flex items-center gap-2">
-              <FiPlus size={16} /> New Story
-            </Link>
-            <Link to="/profile/edit" className="btn-secondary label-caps px-4 py-2 paper-shadow-sm paper-interactive flex items-center gap-2">
+          <div className="flex gap-2">
+            <Link
+              to="/profile/edit"
+              className="btn-secondary label-caps flex-1 px-4 py-2 paper-shadow-sm paper-interactive flex items-center justify-center gap-2"
+            >
               <FiEdit2 size={16} /> Edit Profile
+            </Link>
+            <Link
+              to="/create"
+              className="btn-primary label-caps flex-1 px-4 py-2 paper-shadow-sm paper-interactive flex items-center justify-center gap-2"
+            >
+              <FiPlus size={16} /> New Story
             </Link>
           </div>
         ) : (
           <button
             onClick={toggleFollow}
-            className={`label-caps px-5 py-2 paper-shadow-sm paper-interactive ${
+            className={`label-caps w-full px-5 py-2 paper-shadow-sm paper-interactive ${
               following ? 'btn-secondary' : 'btn-primary'
             }`}
           >
