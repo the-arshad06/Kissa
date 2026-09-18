@@ -127,14 +127,17 @@ alter table public.shares enable row level security;
 -- 9. PROFILES POLICIES
 -- =========================================================
 
+drop policy if exists "Profiles are publicly readable" on public.profiles;
 create policy "Profiles are publicly readable"
 on public.profiles for select
 using (true);
 
+drop policy if exists "Users can create their own profile" on public.profiles;
 create policy "Users can create their own profile"
 on public.profiles for insert to authenticated
 with check (id = auth.uid());
 
+drop policy if exists "Users can update their own profile" on public.profiles;
 create policy "Users can update their own profile"
 on public.profiles for update to authenticated
 using (id = auth.uid())
@@ -145,19 +148,23 @@ with check (id = auth.uid());
 -- 10. STORIES POLICIES
 -- =========================================================
 
+drop policy if exists "Stories are publicly readable" on public.stories;
 create policy "Stories are publicly readable"
 on public.stories for select
 using (true);
 
+drop policy if exists "Users can create their own stories" on public.stories;
 create policy "Users can create their own stories"
 on public.stories for insert to authenticated
 with check (user_id = auth.uid());
 
+drop policy if exists "Users can update their own stories" on public.stories;
 create policy "Users can update their own stories"
 on public.stories for update to authenticated
 using (user_id = auth.uid())
 with check (user_id = auth.uid());
 
+drop policy if exists "Users can delete their own stories" on public.stories;
 create policy "Users can delete their own stories"
 on public.stories for delete to authenticated
 using (user_id = auth.uid());
@@ -167,14 +174,17 @@ using (user_id = auth.uid());
 -- 11. LIKES POLICIES
 -- =========================================================
 
+drop policy if exists "Likes are publicly readable" on public.likes;
 create policy "Likes are publicly readable"
 on public.likes for select
 using (true);
 
+drop policy if exists "Users can create their own likes" on public.likes;
 create policy "Users can create their own likes"
 on public.likes for insert to authenticated
 with check (user_id = auth.uid());
 
+drop policy if exists "Users can delete their own likes" on public.likes;
 create policy "Users can delete their own likes"
 on public.likes for delete to authenticated
 using (user_id = auth.uid());
@@ -184,14 +194,17 @@ using (user_id = auth.uid());
 -- 12. COMMENTS POLICIES
 -- =========================================================
 
+drop policy if exists "Comments are publicly readable" on public.comments;
 create policy "Comments are publicly readable"
 on public.comments for select
 using (true);
 
+drop policy if exists "Users can create their own comments" on public.comments;
 create policy "Users can create their own comments"
 on public.comments for insert to authenticated
 with check (user_id = auth.uid());
 
+drop policy if exists "Users can delete their own comments" on public.comments;
 create policy "Users can delete their own comments"
 on public.comments for delete to authenticated
 using (user_id = auth.uid());
@@ -201,14 +214,17 @@ using (user_id = auth.uid());
 -- 13. FOLLOWS POLICIES
 -- =========================================================
 
+drop policy if exists "Follows are publicly readable" on public.follows;
 create policy "Follows are publicly readable"
 on public.follows for select
 using (true);
 
+drop policy if exists "Users can create their own follows" on public.follows;
 create policy "Users can create their own follows"
 on public.follows for insert to authenticated
 with check (follower_id = auth.uid() and follower_id <> following_id);
 
+drop policy if exists "Users can delete their own follows" on public.follows;
 create policy "Users can delete their own follows"
 on public.follows for delete to authenticated
 using (follower_id = auth.uid());
@@ -218,10 +234,12 @@ using (follower_id = auth.uid());
 -- 14. SHARES POLICIES
 -- =========================================================
 
+drop policy if exists "Shares are publicly readable" on public.shares;
 create policy "Shares are publicly readable"
 on public.shares for select
 using (true);
 
+drop policy if exists "Users can create their own shares" on public.shares;
 create policy "Users can create their own shares"
 on public.shares for insert to authenticated
 with check (user_id = auth.uid());
@@ -280,36 +298,44 @@ on conflict (id) do nothing;
 -- 17. STORAGE POLICIES
 -- =========================================================
 
+drop policy if exists "Public can view avatars" on storage.objects;
 create policy "Public can view avatars"
 on storage.objects for select
 using (bucket_id = 'avatars');
 
+drop policy if exists "Users can upload their own avatars" on storage.objects;
 create policy "Users can upload their own avatars"
 on storage.objects for insert to authenticated
 with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Users can update their own avatars" on storage.objects;
 create policy "Users can update their own avatars"
 on storage.objects for update to authenticated
 using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
 with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Users can delete their own avatars" on storage.objects;
 create policy "Users can delete their own avatars"
 on storage.objects for delete to authenticated
 using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Public can view story images" on storage.objects;
 create policy "Public can view story images"
 on storage.objects for select
 using (bucket_id = 'story-images');
 
+drop policy if exists "Users can upload their own story images" on storage.objects;
 create policy "Users can upload their own story images"
 on storage.objects for insert to authenticated
 with check (bucket_id = 'story-images' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Users can update their own story images" on storage.objects;
 create policy "Users can update their own story images"
 on storage.objects for update to authenticated
 using (bucket_id = 'story-images' and (storage.foldername(name))[1] = auth.uid()::text)
 with check (bucket_id = 'story-images' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Users can delete their own story images" on storage.objects;
 create policy "Users can delete their own story images"
 on storage.objects for delete to authenticated
 using (bucket_id = 'story-images' and (storage.foldername(name))[1] = auth.uid()::text);

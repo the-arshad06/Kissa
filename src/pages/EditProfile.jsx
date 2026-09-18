@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import MainLayout from '../components/MainLayout'
 import ImageCropperModal from '../components/ImageCropperModal'
 import Avatar from '../components/Avatar'
 import { useAuth } from '../context/AuthContext'
-import { updateProfile, uploadAvatar } from '../lib/api'
+import { updateProfile, uploadAvatar, changeUsername, fetchUsernameChangesRemaining } from '../lib/api'
 import { fileToDataUrl } from '../lib/imageUtils'
 
 export default function EditProfile() {
@@ -13,14 +13,27 @@ export default function EditProfile() {
   const navigate = useNavigate()
 
   const [fullName, setFullName] = useState(profile?.full_name || '')
+  const [username, setUsername] = useState(profile?.username || '')
   const [bio, setBio] = useState(profile?.bio || '')
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(profile?.avatar_url || null)
   const [avatarRemoved, setAvatarRemoved] = useState(false)
   const [cropFile, setCropFile] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [remaining, setRemaining] = useState(null) // username changes left in the last 14 days
+
+  useEffect(() => {
+    if (!user) return
+    fetchUsernameChangesRemaining(user.id).then(({ remaining, error }) => {
+      if (!error) setRemaining(remaining)
+    })
+  }, [user])
 
   if (!profile) return null
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20))
+  }
 
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0]
@@ -48,6 +61,13 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const cleanUsername = username.trim()
+    if (cleanUsername.length < 3) {
+      toast.error('Username must be at least 3 characters')
+      return
+    }
+
     setBusy(true)
 
     let avatar_url = profile.avatar_url
@@ -69,14 +89,30 @@ export default function EditProfile() {
       avatar_url,
     })
 
-    setBusy(false)
     if (error) {
+      setBusy(false)
       toast.error(error.message)
-    } else {
-      toast.success('Profile updated')
-      refreshProfile(data)
-      navigate(`/profile/${profile.username}`)
+      return
     }
+
+    let finalProfile = data
+
+    if (cleanUsername !== profile.username) {
+      const { data: renamed, error: usernameError } = await changeUsername(cleanUsername)
+      if (usernameError) {
+        setBusy(false)
+        toast.error(usernameError.message)
+        // Other fields (name/bio/photo) already saved successfully — reflect that.
+        refreshProfile(data)
+        return
+      }
+      finalProfile = renamed
+    }
+
+    setBusy(false)
+    toast.success('Profile updated')
+    refreshProfile(finalProfile)
+    navigate(`/profile/${finalProfile.username}`)
   }
 
   return (
@@ -119,8 +155,21 @@ export default function EditProfile() {
 
           <div>
             <label className="label-caps block mb-2">Username</label>
-            <input value={profile.username} disabled className="input-field w-full px-3 py-3 text-sm opacity-60" />
-            <p className="text-xs text-on-surface-variant mt-1">Username can't be changed yet.</p>
+            <input
+              value={username}
+              onChange={handleUsernameChange}
+              disabled={remaining === 0}
+              minLength={3}
+              maxLength={20}
+              className="input-field w-full px-3 py-3 text-sm disabled:opacity-60"
+            />
+            <p className="text-xs text-on-surface-variant mt-1">
+              {remaining === null
+                ? 'Lowercase letters, numbers, and underscores only.'
+                : remaining === 0
+                  ? "You've used both username changes for this 14-day window. Try again later."
+                  : `${remaining} of 2 username ${remaining === 1 ? 'change' : 'changes'} left in the next 14 days.`}
+            </p>
           </div>
 
           <div>

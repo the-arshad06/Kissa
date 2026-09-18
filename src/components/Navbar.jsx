@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FiSearch, FiCompass, FiBell, FiUser, FiMenu } from 'react-icons/fi'
+import { FiSearch, FiHome, FiUser, FiMenu } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
 import HamburgerMenu from './HamburgerMenu'
@@ -74,16 +74,13 @@ export default function Navbar() {
 
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 w-full z-40 flex md:hidden justify-around items-center py-2 bg-surface px-4 border-t-2 border-on-surface shadow-[0_-3px_0_0_rgba(27,28,25,0.06)]">
-        <Link to="/search" className="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:text-primary transition-colors">
-          <FiCompass size={20} />
-          <span className="text-[10px] label-caps">Explore</span>
+        <Link to="/" className="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:text-primary transition-colors">
+          <FiHome size={20} />
+          <span className="text-[10px] label-caps">Home</span>
         </Link>
-        <Link
-          to={user ? '/notifications' : '/login'}
-          className="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:text-primary transition-colors"
-        >
-          <FiBell size={20} />
-          <span className="text-[10px] label-caps">Alerts</span>
+        <Link to="/search" className="flex flex-col items-center gap-1 p-2 text-on-surface-variant hover:text-primary transition-colors">
+          <FiSearch size={20} />
+          <span className="text-[10px] label-caps">Search</span>
         </Link>
         <Link
           to={user ? `/profile/${profile?.username}` : '/login'}

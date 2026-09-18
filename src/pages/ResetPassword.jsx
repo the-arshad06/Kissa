@@ -15,12 +15,26 @@ export default function ResetPassword() {
   // fires this event once the temporary "recovery" session is ready. Until
   // then, updateUser() below has nothing to act on.
   const [ready, setReady] = useState(false)
+  const [linkError, setLinkError] = useState(null)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState(false)
 
   useEffect(() => {
+    // If the link is expired/invalid, Supabase redirects here with
+    // ?error=...&error_description=... (or the same in the hash) instead of
+    // a session — surface that instead of leaving the page stuck on
+    // "Verifying Link" forever.
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+    const searchParams = new URLSearchParams(window.location.search)
+    const description =
+      hashParams.get('error_description') || searchParams.get('error_description')
+    if (description) {
+      setLinkError(description.replace(/\+/g, ' '))
+      return
+    }
+
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') setReady(true)
     })
@@ -29,7 +43,17 @@ export default function ResetPassword() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true)
     })
-    return () => listener.subscription.unsubscribe()
+
+    // Don't leave the person staring at "Verifying Link" indefinitely if
+    // nothing ever arrives (e.g. they opened this URL directly).
+    const timeout = setTimeout(() => {
+      setLinkError((current) => current ?? 'This link is invalid or has expired.')
+    }, 8000)
+
+    return () => {
+      listener.subscription.unsubscribe()
+      clearTimeout(timeout)
+    }
   }, [])
 
   const handleSubmit = async (e) => {
@@ -87,16 +111,21 @@ export default function ResetPassword() {
                 Go to Log In
               </button>
             </>
+          ) : linkError ? (
+            <>
+              <h1 className="font-display text-headline font-bold mb-1">Link Expired</h1>
+              <p className="text-sm text-on-surface-variant mb-6">{linkError}</p>
+              <Link
+                to="/forgot-password"
+                className="btn-primary label-caps px-6 py-3 paper-shadow-sm paper-interactive inline-block"
+              >
+                Request a New Link
+              </Link>
+            </>
           ) : !ready ? (
             <>
               <h1 className="font-display text-headline font-bold mb-1">Verifying Link</h1>
-              <p className="text-sm text-on-surface-variant">
-                Give it a moment — if this doesn't resolve, the link may have expired.{' '}
-                <Link to="/forgot-password" className="text-primary underline">
-                  Request a new one
-                </Link>
-                .
-              </p>
+              <p className="text-sm text-on-surface-variant">Give it a moment...</p>
             </>
           ) : (
             <>

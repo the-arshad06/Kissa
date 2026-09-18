@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FiMapPin, FiHeart, FiMessageCircle } from 'react-icons/fi'
 import Avatar from './Avatar'
+import { timeAgo, fullDate } from '../lib/dateUtils'
 
 export default function StoryCard({ story }) {
   return (
@@ -40,9 +41,12 @@ export default function StoryCard({ story }) {
         <p className="text-sm text-on-surface-variant line-clamp-3">{story.content}</p>
 
         <div className="flex items-center justify-between mt-2 pt-3 border-t border-dashed border-outline-variant">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <Avatar src={story.avatar_url} size="xs" />
-            <span className="text-xs">{story.full_name || story.username}</span>
+            <span className="text-xs truncate">{story.full_name || story.username}</span>
+            <span className="text-xs text-on-surface-variant shrink-0" title={fullDate(story.created_at)}>
+              · {timeAgo(story.created_at)}
+            </span>
           </div>
           <div className="flex items-center gap-3 text-on-surface-variant">
             <span className="flex items-center gap-1 text-xs">

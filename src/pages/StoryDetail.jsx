@@ -9,6 +9,7 @@ import CommentSection from '../components/CommentSection'
 import { useAuth } from '../context/AuthContext'
 import { fetchStoryById, deleteStory, isFollowing, followUser, unfollowUser } from '../lib/api'
 import Avatar from '../components/Avatar'
+import { timeAgo, fullDate } from '../lib/dateUtils'
 
 export default function StoryDetail() {
   const { id } = useParams()
@@ -106,12 +107,8 @@ export default function StoryDetail() {
             <Avatar src={story.avatar_url} size="md" />
             <div>
               <p className="text-sm font-bold">Written by {story.full_name || story.username}</p>
-              <p className="text-xs text-on-surface-variant">
-                {new Date(story.created_at).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+              <p className="text-xs text-on-surface-variant" title={fullDate(story.created_at)}>
+                {timeAgo(story.created_at)}
                 {story.location ? ` · ${story.location}` : ''}
               </p>
             </div>

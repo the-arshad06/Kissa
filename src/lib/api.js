@@ -252,6 +252,23 @@ export async function updateProfile(userId, patch) {
   return supabase.from('profiles').update(patch).eq('id', userId).select().single()
 }
 
+// Username changes are rate-limited (2 per 14 days), enforced by the
+// change_username() database function — never update profiles.username
+// directly, that column is locked down for regular writes.
+export async function changeUsername(newUsername) {
+  return supabase.rpc('change_username', { new_username: newUsername })
+}
+
+export async function fetchUsernameChangesRemaining(userId) {
+  const { count, error } = await supabase
+    .from('username_history')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .gte('changed_at', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString())
+  if (error) return { remaining: null, error }
+  return { remaining: Math.max(0, 2 - (count ?? 0)), error: null }
+}
+
 // ---------- Liked stories ----------
 
 export async function fetchLikedStories(userId) {
